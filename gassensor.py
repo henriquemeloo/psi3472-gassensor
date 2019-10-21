@@ -9,8 +9,8 @@ from keras.utils import plot_model
 from keras.optimizers import Adam
 
 
-## Gerando base de dados
-# Lendo tabelas dos sensores
+## Generate database
+# Read sensors tables
 sensor_ch4 = pd.read_csv(
     './sensor_ch4.csv', sep=',', decimal=','
     ).rename(columns={'medida':'medida_ch4'})
@@ -28,18 +28,18 @@ df = sensor_ch4.merge(
         ).drop(
             columns=['h2', 'co']
             )
-# Gerando conjuntos de treino e teste
+# Generate train and test datasets
 msk = np.random.rand(len(df)) < 0.85
 train_data = df[msk]
 test_data = df[~msk]
 print('{len_train} elements in train and {len_test} elements in test'.format(
     len_train=len(train_data), len_test=len(test_data))
 )
-# Variaveis de entrada e de saida
+# Input and output variables
 inputs = ['medida_ch4', 'medida_h2', 'medida_co']
 output = 'ch4'
 
-## Treinando modelo
+## Train model
 # define the keras model
 model = Sequential()
 model.add(Dense(3, input_dim=3, activation='sigmoid'))
@@ -61,7 +61,7 @@ history = model.fit(
     verbose=False
 )
 
-## Avaliando resultado
+## Evaluate result
 # evaluate model
 train_rms = np.sqrt(history.history['loss'][-1])
 val_rms = np.sqrt(history.history['val_loss'][-1])
@@ -77,7 +77,7 @@ RMS de teste: {test_rms}
     val_rms=val_rms,
     test_rms=test_rms
 ))
-# Plotando resultado
+# Plot result
 plt.rcParams.update({'font.size':14})
 plt.figure(figsize=(9,9))
 plt.plot(np.sqrt(history.history['loss']))
